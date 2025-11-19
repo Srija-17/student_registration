@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Student Portal — Sign Up</title>
+  <link rel="stylesheet" href="signup.css">
+</head>
+<body>
+  <main class="page">
+    <section class="signup-card" aria-labelledby="signup-title">
+      <div class="brand">
+        <h1 id="signup-title">Create your account</h1>
+        <p class="lead">Student registration — join to access dashboard & profile</p>
+      </div>
+
+      <!-- REMOVED method="post" action="/signup" -->
+      <form id="signupForm" class="form" novalidate>
+        <div class="form-row">
+          <label for="srn">SRN</label>
+          <input id="srn" name="srn" type="text" inputmode="text" required autocomplete="off" placeholder="e.g. 1RV17CS001" />
+        </div>
+
+        <div class="form-row">
+          <label for="fullname">Full name</label>
+          <input id="fullname" name="fullname" type="text" required autocomplete="name" placeholder="Your full name" />
+        </div>
+
+        <div class="form-row">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" required autocomplete="email" placeholder="you@school.edu" />
+        </div>
+
+        <div class="form-grid">
+          <div class="form-row">
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" minlength="8" required autocomplete="new-password" placeholder="At least 8 characters" />
+          </div>
+
+          <div class="form-row">
+            <label for="confirmPassword">Confirm password</label>
+            <input id="confirmPassword" name="confirmPassword" type="password" minlength="8" required autocomplete="new-password" placeholder="Repeat password" />
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-row">
+            <label for="department">Department</label>
+            <select id="department" name="department" required>
+              <option value="" disabled selected>Select department</option>
+              <option value="cse">CSE</option>
+              <option value="ece">ECE</option>
+              <option value="mech">Mechanical</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label for="year">Year</label>
+            <select id="year" name="year" required>
+              <option value="" disabled selected>Select year</option>
+              <option value="1">1st</option>
+              <option value="2">2nd</option>
+              <option value="3">3rd</option>
+              <option value="4">4th</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="formMessage" class="form-message" role="status" aria-live="polite"></div>
+
+        <div class="form-actions">
+          <button id="submitBtn" type="submit" class="btn primary">Create account</button>
+        </div>
+
+        <p class="muted">
+          Already registered?
+          <a href="login.html" class="link">Sign in</a>
+        </p>
+      </form>
+    </section>
+  </main>
+
+  <script>
+  (function () {
+    const form = document.getElementById('signupForm');
+    const pwd = document.getElementById('password');
+    const confirm = document.getElementById('confirmPassword');
+    const msg = document.getElementById('formMessage');
+    const submitBtn = document.getElementById('submitBtn');
+
+    function showMessage(text, type = 'error') {
+      msg.textContent = text;
+      msg.className = 'form-message ' + (type === 'error' ? 'error' : 'success');
+    }
+
+    function setLoading(loading) {
+      if (loading) {
+        submitBtn.disabled = true;
+        submitBtn.dataset.orig = submitBtn.textContent;
+        submitBtn.textContent = 'Creating…';
+        submitBtn.classList.add('loading');
+      } else {
+        submitBtn.disabled = false;
+        if (submitBtn.dataset.orig) submitBtn.textContent = submitBtn.dataset.orig;
+        submitBtn.classList.remove('loading');
+      }
+    }
+
+    function passwordHint(pw) {
+      if (!pw) return '';
+      if (pw.length < 8) return 'Password should be at least 8 characters.';
+      if (!/[A-Z]/.test(pw)) return 'Consider adding an uppercase letter.';
+      if (!/[0-9]/.test(pw)) return 'Consider adding a number.';
+      return '';
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      msg.textContent = '';
+
+      if (!form.checkValidity()) {
+        showMessage('Please fill all required fields correctly.');
+        return;
+      }
+
+      if (pwd.value !== confirm.value) {
+        showMessage('Passwords do not match.');
+        confirm.focus();
+        return;
+      }
+
+      const hint = passwordHint(pwd.value);
+      if (hint) {
+        showMessage(hint, 'error');
+      }
+
+      const payload = {
+        srn: form.srn.value.trim(),
+        fullname: form.fullname.value.trim(),
+        email: form.email.value.trim(),
+        password: pwd.value,
+        department: form.department.value,
+        year: form.year.value
+      };
+
+      setLoading(true);
+
+      try {
+        const res = await fetch('/api/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify(payload)
+        });
+
+        console.log('[SIGNUP] response status:', res.status, res.statusText);
+        console.log('[SIGNUP] content-type:', res.headers.get('content-type'));
+
+        let data;
+        const contentType = res.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+          try {
+            data = await res.json();
+          } catch (parseErr) {
+            console.error('[SIGNUP] JSON parse error:', parseErr);
+            const text = await res.text();
+            console.error('[SIGNUP] raw body (first 500 chars):', text.slice(0, 500));
+            showMessage('Signup failed (invalid JSON from server).', 'error');
+            setLoading(false);
+            return;
+          }
+        } else {
+          const text = await res.text();
+          console.error('[SIGNUP] non-JSON response body (first 500 chars):', text.slice(0, 500));
+          showMessage('Signup failed (server returned HTML instead of JSON). Check console.', 'error');
+          setLoading(false);
+          return;
+        }
+
+        if (!res.ok) {
+          console.error('[SIGNUP] error response:', data);
+          if (data && data.errors && Array.isArray(data.errors)) {
+            const msgs = data.errors.map(x => x.msg || JSON.stringify(x)).join(' • ');
+            showMessage(msgs, 'error');
+          } else if (data && data.message) {
+            showMessage(data.message, 'error');
+          } else {
+            showMessage('Signup failed (status ' + res.status + ')', 'error');
+          }
+          setLoading(false);
+          return;
+        }
+
+        console.log('[SIGNUP] success:', data);
+        showMessage('Account created. Redirecting…', 'success');
+        setTimeout(() => {
+          window.location.href = '/dashboard.html';
+        }, 900);
+      } catch (err) {
+        console.error('[SIGNUP] network or fetch error:', err);
+        showMessage('Network error — please try again.', 'error');
+        setLoading(false);
+      }
+    });
+
+    pwd.addEventListener('input', () => {
+      const hint = passwordHint(pwd.value);
+      if (hint) {
+        msg.textContent = hint;
+        msg.className = 'form-message error';
+      } else {
+        if (msg.classList.contains('error') && msg.textContent && msg.textContent.startsWith('Password')) {
+          msg.textContent = '';
+          msg.className = 'form-message';
+        }
+      }
+    });
+  })();
+  </script>
+</body>
+</html>

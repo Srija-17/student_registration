@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Student Portal — Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- Header -->
+    <header class="header">
+      <div class="brand">
+        <button id="menuToggle" class="icon-btn" aria-label="Toggle menu">☰</button>
+        <div class="logo">E</div>
+        <h2>E-Skool</h2>
+      </div>
+
+      <div class="header-actions">
+        <div class="search">
+          <input id="searchInput" class="input search-input" placeholder="What do you want to learn today?" aria-label="Search" />
+        </div>
+        <div class="user">
+          <button id="signoutTop" class="btn ghost">Sign out</button>
+          <div class="avatar" title="User">HB</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Shell: sidebar + main -->
+    <div class="shell">
+      <!-- Left Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <div class="profile-mini">
+          <div class="logo-cta">E-Skool</div>
+          <div class="semester">Semester 2 • 4</div>
+        </div>
+
+        <nav class="nav">
+          <a class="nav-item active" href="#"><span class="ico">🏠</span><span class="label">Home</span></a>
+          <a class="nav-item" href="#"><span class="ico">📊</span><span class="label">My Results</span></a>
+          <a class="nav-item" href="#"><span class="ico">📁</span><span class="label">Submissions</span></a>
+          <a class="nav-item" href="#"><span class="ico">📚</span><span class="label">Tutorials</span></a>
+          <a class="nav-item" href="#"><span class="ico">👥</span><span class="label">PTA Meetings</span></a>
+          <a class="nav-item" href="#"><span class="ico">⚙️</span><span class="label">Settings</span></a>
+        </nav>
+
+        <div class="sidebar-foot">
+          <button id="signoutSide" class="btn-logout">Sign out</button>
+        </div>
+      </aside>
+
+      <!-- Main content -->
+      <main class="main">
+        <div class="page-title">
+          <div>
+            <h3>Welcome back, Harshit</h3>
+            <div class="meta">Have a great day — keep up with your tasks and lessons</div>
+          </div>
+          <div class="controls">
+            <button class="btn ghost">New submission</button>
+            <button class="btn primary">Create assignment</button>
+          </div>
+        </div>
+
+        <div class="grid">
+          <!-- Left column (main cards) -->
+          <section class="col-span-8 main-col">
+            <!-- Profile card -->
+            <div class="card profile-card">
+              <div class="profile-left">
+                <div class="profile">
+                  <div class="avatar-lg">HB</div>
+                  <div class="info">
+                    <div class="name">Harshit Baliyan</div>
+                    <div class="meta">Computer Science — 3rd Year</div>
+                  </div>
+                </div>
+                <p class="profile-note">Hi Harshit, you have completed <strong>70%</strong> of your weekly targets. Keep learning with curated lessons.</p>
+                <div class="progress-wrap">
+                  <div class="progress">
+                    <div class="progress-bar" style="width:70%"></div>
+                  </div>
+                  <div class="progress-meta">70% complete</div>
+                </div>
+              </div>
+
+              <div class="profile-right">
+                <button class="btn primary">Set Goals</button>
+                <div class="illustration" aria-hidden="true">
+                  <!-- simple SVG decorative person -->
+                  <svg width="120" height="80" viewBox="0 0 120 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="0" y="0" width="120" height="80" rx="12" fill="#0e2233" />
+                    <circle cx="90" cy="26" r="12" fill="#06b6d4"/>
+                    <rect x="64" y="45" width="42" height="8" rx="4" fill="#2dd4bf"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Assignments -->
+            <div class="card">
+              <div class="card-header">
+                <h4>Your Assignments</h4>
+                <a href="#" class="link small">View More</a>
+              </div>
+              <div class="cards-row">
+                <article class="task-card">
+                  <div class="task-title">English lesson 2</div>
+                  <div class="task-meta">Questions / Answers</div>
+                  <div class="task-footer">
+                    <span class="badge new">New</span>
+                    <span class="muted">Due: 20 Jan 2025</span>
+                  </div>
+                </article>
+
+                <article class="task-card">
+                  <div class="task-title">Mathematics III</div>
+                  <div class="task-meta">Multiple choice</div>
+                  <div class="task-footer">
+                    <div class="mini-progress"><div class="mini-bar" style="width:45%"></div></div>
+                    <span class="muted">45% complete</span>
+                  </div>
+                </article>
+
+                <article class="task-card">
+                  <div class="task-title">Medieval History</div>
+                  <div class="task-meta">Answer writing</div>
+                  <div class="task-footer">
+                    <span class="badge done">Submitted</span>
+                    <span class="muted">Graded: 80%</span>
+                  </div>
+                </article>
+              </div>
+            </div>
+
+            <!-- Lessons for you -->
+            <div class="card">
+              <div class="card-header">
+                <h4>Lessons for you</h4>
+                <a href="#" class="link small">View More</a>
+              </div>
+              <div class="lessons-row">
+                <div class="lesson-card yellow">
+                  <div class="lesson-title">Focus Words</div>
+                  <div class="lesson-sub">English</div>
+                </div>
+                <div class="lesson-card pink">
+                  <div class="lesson-title">Workshops</div>
+                  <div class="lesson-sub">Extra-Curricular</div>
+                </div>
+                <div class="lesson-card green">
+                  <div class="lesson-title">Math Practice</div>
+                  <div class="lesson-sub">Problem Set</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent activity / table -->
+            <div class="card">
+              <div class="card-header">
+                <h4>Recent activity</h4>
+                <a href="#" class="link small">Export</a>
+              </div>
+              <table class="table">
+                <thead>
+                  <tr><th>Activity</th><th>Course</th><th>Date</th><th>Status</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Uploaded assignment</td><td>Mathematics III</td><td>2025-01-12</td><td><span class="badge">Done</span></td></tr>
+                  <tr><td>Quiz attempt</td><td>English</td><td>2025-01-10</td><td><span class="badge">In progress</span></td></tr>
+                  <tr><td>Joined workshop</td><td>Robotics</td><td>2025-01-08</td><td><span class="badge">Attended</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- Right column (sidebar widgets) -->
+          <aside class="col-span-4 right-col">
+            <div class="card small">
+              <div class="card-header"><h4>Your Tasks Today</h4></div>
+              <ul class="tasks">
+                <li><input type="checkbox" /> <span>Upload Assignment</span></li>
+                <li><input type="checkbox" checked /> <span>Study for Quiz</span></li>
+                <li><input type="checkbox" /> <span>Paragraph Corrections</span></li>
+              </ul>
+              <button class="btn ghost" style="width:100%; margin-top:8px">+ Create New</button>
+            </div>
+
+            <div class="card small">
+              <div class="card-header"><h4>Calendar</h4></div>
+              <div class="calendar" aria-hidden="true">
+                <!-- simple static calendar grid as placeholder -->
+                <div class="cal-head"><strong>January 2025</strong></div>
+                <div class="cal-grid">
+                  <div class="cal-day muted">Su</div>
+                  <div class="cal-day muted">Mo</div>
+                  <div class="cal-day muted">Tu</div>
+                  <div class="cal-day muted">We</div>
+                  <div class="cal-day muted">Th</div>
+                  <div class="cal-day muted">Fr</div>
+                  <div class="cal-day muted">Sa</div>
+                  <!-- dates (placeholder) -->
+                  <div class="cal-cell"></div><div class="cal-cell"></div><div class="cal-cell">1</div><div class="cal-cell">2</div><div class="cal-cell">3</div><div class="cal-cell">4</div><div class="cal-cell">5</div>
+                  <!-- more rows omitted for brevity; it's visual placeholder -->
+                </div>
+              </div>
+            </div>
+
+            <div class="card small">
+              <div class="card-header"><h4>Refer a friend</h4></div>
+              <div class="empty">
+                Share and earn rewards for inviting friends to the portal.
+                <div style="margin-top:10px"><button class="btn primary">Refer Now</button></div>
+              </div>
+            </div>
+
+          </aside>
+        </div>
+
+        <footer class="footer">© 2025 E-Skool • All rights reserved</footer>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    // Basic interactivity: sign out buttons and menu toggle
+    document.getElementById('signoutTop').addEventListener('click', () => {
+      // Example: POST to signout endpoint or remove token then redirect
+      // fetch('/api/signout', { method: 'POST' }).finally(() => window.location.href = '/login');
+      window.location.href = '/login';
+    });
+    document.getElementById('signoutSide').addEventListener('click', () => {
+      window.location.href = '/login';
+    });
+
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebar = document.getElementById('sidebar');
+    menuToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('collapsed');
+    });
+  </script>
+</body>
+</html>

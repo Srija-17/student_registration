@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Student Portal — Login</title>
+  <link rel="stylesheet" href="login.css" />
+</head>
+<body>
+  <main class="page">
+    <section class="auth-card" aria-labelledby="login-title">
+      <div class="brand">
+        <h1 id="login-title">Welcome back</h1>
+        <p class="lead">Sign in to access your dashboard and profile</p>
+      </div>
+
+      <!-- autocomplete="off" to disable browser autofill -->
+      <form id="loginForm" class="form" novalidate autocomplete="off">
+        <div class="form-row">
+          <label for="srnOrEmail">SRN or Email</label>
+          <input 
+            id="srnOrEmail" 
+            name="srnOrEmail" 
+            type="text" 
+            required 
+            autocomplete="off"
+            placeholder="SRN or your email" 
+          />
+        </div>
+
+        <div class="form-row">
+          <label for="password">Password</label>
+          <input 
+            id="password" 
+            name="password" 
+            type="password" 
+            minlength="8" 
+            required 
+            autocomplete="new-password"
+            placeholder="Your password" 
+          />
+        </div>
+
+        <div class="form-row form-inline">
+          <label class="checkbox">
+            <input type="checkbox" id="remember" name="remember" />
+            <span>Remember me</span>
+          </label>
+
+          <a class="link small" href="/forgot-password">Forgot password?</a>
+        </div>
+
+        <div id="formMessage" class="form-message" role="status" aria-live="polite"></div>
+
+        <div class="form-actions">
+          <button id="submitBtn" type="submit" class="btn primary">Sign in</button>
+        </div>
+
+        <p class="muted">
+          New here?
+          <a href="signup.html" class="link">Create an account</a>
+        </p>
+      </form>
+    </section>
+  </main>
+
+  <script>
+  (function () {
+    const form = document.getElementById('loginForm');
+    const msg = document.getElementById('formMessage');
+    const submitBtn = document.getElementById('submitBtn');
+
+    function showMessage(text, type = 'error') {
+      msg.textContent = text;
+      msg.className = 'form-message ' + (type === 'error' ? 'error' : 'success');
+    }
+
+    function setLoading(loading) {
+      if (loading) {
+        submitBtn.disabled = true;
+        submitBtn.dataset.orig = submitBtn.textContent;
+        submitBtn.textContent = 'Signing in…';
+        submitBtn.classList.add('loading');
+      } else {
+        submitBtn.disabled = false;
+        if (submitBtn.dataset.orig) submitBtn.textContent = submitBtn.dataset.orig;
+        submitBtn.classList.remove('loading');
+      }
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      msg.textContent = '';
+
+      if (!form.checkValidity()) {
+        showMessage('Please fill all required fields correctly.');
+        return;
+      }
+
+      const payload = {
+        identifier: form.srnOrEmail.value.trim(),
+        password: form.password.value,
+        remember: form.remember.checked
+      };
+
+      setLoading(true);
+
+      try {
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify(payload)
+        });
+
+        console.log('[LOGIN] response status:', res.status, res.statusText);
+        console.log('[LOGIN] content-type:', res.headers.get('content-type'));
+
+        let data;
+        const contentType = res.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+          try {
+            data = await res.json();
+          } catch (parseErr) {
+            console.error('[LOGIN] JSON parse error:', parseErr);
+            const text = await res.text();
+            console.error('[LOGIN] raw body:', text.slice(0, 500));
+            showMessage('Login failed (invalid JSON from server).', 'error');
+            setLoading(false);
+            return;
+          }
+        } else {
+          const text = await res.text();
+          console.error('[LOGIN] non-JSON response:', text.slice(0, 500));
+          showMessage('Login failed (server returned HTML). Check console.', 'error');
+          setLoading(false);
+          return;
+        }
+
+        if (!res.ok) {
+          console.error('[LOGIN] error response:', data);
+          showMessage(data.message || 'Login failed', 'error');
+          setLoading(false);
+          return;
+        }
+
+        console.log('[LOGIN] success:', data);
+        showMessage('Login successful. Redirecting…', 'success');
+        setTimeout(() => {
+          window.location.href = '/dashboard.html';
+        }, 900);
+      } catch (err) {
+        console.error('[LOGIN] network or fetch error:', err);
+        showMessage('Network error — please try again.', 'error');
+        setLoading(false);
+      }
+    });
+  })();
+  </script>
+</body>
+</html>
