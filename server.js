@@ -36,6 +36,11 @@ app.use((req, res, next) => {
 // Serve static files
 app.use(express.static(path.join(process.cwd(), 'public')));
 
+// Landing page -> signup
+app.get('/', (req, res) => {
+  res.sendFile(path.join(process.cwd(), 'public', 'signup.html'));
+});
+
 // API routes
 app.use('/api', authRoutes);
 
